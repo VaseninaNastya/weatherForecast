@@ -1,0 +1,26 @@
+{
+  "name": "weatherforecast",
+  "version": "1.0.0",
+  "description": "weather forecast: Прогноз погоды",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VaseninaNastya/weatherForecast.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VaseninaNastya/weatherForecast/issues"
+  },
+  "homepage": "https://github.com/VaseninaNastya/weatherForecast#readme",
+  "devDependencies": {
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.2",
+    "sass": "^1.39.0",
+    "sass-loader": "^12.1.0",
+    "webpack": "^5.52.0"
+  }
+}
