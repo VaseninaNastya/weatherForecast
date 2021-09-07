@@ -12,7 +12,6 @@ class MainBlock {
   async getData() {
     const pictureAPI = new PictureAPI();
     this.pictureData =   await pictureAPI.getPicture();
-    console.log('this.pictureData', this.pictureData)
   }
 }
 export default MainBlock;
