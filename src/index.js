@@ -1,3 +1,5 @@
 import MainBlock from "./components/MainBlock/MainBlock";
+
 const mainBlock = new MainBlock()
-document.body.prepend( mainBlock.generateLayout())
+const mainBlockElem = mainBlock.generateLayout()
+document.body.prepend( mainBlockElem)
