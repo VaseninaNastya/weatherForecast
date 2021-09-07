@@ -52,10 +52,9 @@ class WeatherForTodayBlock {
         mounthNumber = date.split(" ")[0].split("-")[1].trim();
       }
       if (mounthNumber && mounthNumber.length > 0) {
-        result = String(date.split(" ")[0].split("-")[2])+ ' ' + String(mounth[mounthNumber - 1])+ ' ' + String(date.split(" ")[0].split("-")[0]);
+        result = String(date.split(" ")[0].split("-")[2])+ ' ' + String(mounth[mounthNumber - 1]);
       }
     }
-
     return result;
   }
 }
