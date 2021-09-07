@@ -20,7 +20,7 @@ const config = {
 
     output: {
         filename: 'js/[name].bundle.js',
-        publicPath: '/'
+        publicPath: './'
     },
     devServer: {
         open: true,
