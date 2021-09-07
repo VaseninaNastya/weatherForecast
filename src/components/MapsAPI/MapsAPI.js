@@ -1,4 +1,4 @@
-class CityAPI {
+class MapsAPI {
   constructor() {
     this.API_SERVER = 'https://ipinfo.io/json';
 
@@ -14,5 +14,5 @@ class CityAPI {
       .catch((error) => Error(error));
   }
 }
-export default CityAPI;
+export default MapsAPI;
 
