@@ -1,11 +1,12 @@
 class WeatherAPI {
-  constructor(city) {
+  constructor(city,coutDays) {
     this.API_SERVER = 'https://api.weatherapi.com/v1/forecast.json';
     this.city = city;
+    this.coutDays = coutDays;
   }
   /*  Users   */
-  async text() {
-    return fetch(this.API_SERVER + '?key=d3daec91421e4a0282a161907210709&q=' + this.city + '&days=3' , {
+  async getWeatherData() {
+    return fetch(this.API_SERVER + '?key=d3daec91421e4a0282a161907210709&q=' + this.city + '&days='+  this.coutDays, {
       method: "GET",
     })
       .then((response) => {
