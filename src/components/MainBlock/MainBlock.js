@@ -3,9 +3,10 @@ import s from "./MainBlock.module.scss";
 import PictureAPI from "./../PictureAPI/PictureAPI";
 
 class MainBlock {
-generateLayout() {
-
-    const mainContainer = create("div", s.wpapper);
+  async generateLayout() {
+    await this.getData();
+    const backGroundImg = this.pictureData.urls.full 
+    const mainContainer = create("div", s.wpapper, null, null, ['style' ,"background-image: url(" + `${backGroundImg}` + ")"]);
     return mainContainer;
   }
   async getData() {
