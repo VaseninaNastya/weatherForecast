@@ -51,7 +51,6 @@ const container = await this.generateContent()
         document.querySelector('.wrapper').append(content)
       }
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_temp")){
-        console.log("ssss")
         this.selectedTemp = e.target.getAttribute("data-value")
         //localStorage.setItem('weatherForecast_temp', e.target.getAttribute("data-value"))
         if(document.querySelector(".item_temp_unactive")){
