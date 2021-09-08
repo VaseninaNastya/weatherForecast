@@ -5,7 +5,12 @@ import CityAPI from "../CityAPI/CityAPI";
 import WeatherAPI from "../WeatherAPI/WeatherAPI";
 
 class WeatherForTodayBlock {
+  constructor(wordsData){
+    this.wordsData = wordsData
+
+  }
   async generateLayout() {
+    const wordsData = this.wordsData
     await this.getCityData();
     const cityName = this.cityData.city;
     await this.getWeatherData(this.cityData.city, 1);
@@ -18,9 +23,9 @@ class WeatherForTodayBlock {
       "div",
       s.logicalBlock,
       create("ul", s.weatherForToday_list, [
-        create("li", s.weatherForToday_item, "City: " + cityName + "; Country: " + countryName),
-        create("li", s.weatherForToday_item, "Today's date: " + currentDay),
-        create("li", s.weatherForToday_item, [create('span', null,"Current weather: "), currentWeather]),
+        create("li", s.weatherForToday_item, wordsData.city + cityName + wordsData.country + countryName),
+        create("li", s.weatherForToday_item, wordsData.todaysDate + currentDay),
+        create("li", s.weatherForToday_item, [create('span', null, wordsData.currentWeather), currentWeather]),
       ])
     );
     return weatherForTodayContainer;
@@ -57,6 +62,7 @@ class WeatherForTodayBlock {
   }
   currentWeather (data) {
     let result = ''
+    const wordsData = this.wordsData
     const currentTemperature = data.temp_c;
     const summary = data.condition.text;
     const apparentTemperature = data.feelslike_c;
@@ -64,11 +70,11 @@ class WeatherForTodayBlock {
     const wind_kpm = Math.round(data.wind_kph * 10 / 60);
     if (currentTemperature && summary && apparentTemperature && humidity && wind_kpm) {
       result = create("ul", s.currentWeather_list,[
-        create('li', s.currentWeather_item, "Current temperature: " + currentTemperature ),
-        create('li', s.currentWeather_item, "General description: " + summary ),
-        create('li', s.currentWeather_item, "Apparent temperature:" + apparentTemperature ),
-        create('li', s.currentWeather_item, "Wind speed (m/s): " + wind_kpm ),
-        create('li', s.currentWeather_item, "Humidity: " + humidity ),
+        create('li', s.currentWeather_item, wordsData.сurrentTemperature + currentTemperature ),
+        create('li', s.currentWeather_item, wordsData.generalDescription + summary ),
+        create('li', s.currentWeather_item, wordsData.apparentTemperature + apparentTemperature ),
+        create('li', s.currentWeather_item, wordsData.windSpeed_ms + wind_kpm ),
+        create('li', s.currentWeather_item, wordsData.humidity + humidity ),
       ])
       
     }
