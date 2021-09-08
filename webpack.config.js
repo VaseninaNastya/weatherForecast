@@ -40,13 +40,28 @@ const config = {
                 loader: 'babel-loader',
             },
             {
-                test: /\.css$/i,
-                use: [stylesHandler,'css-loader'],
-            },
-            {
                 test: /\.s[ac]ss$/i,
-                use: [stylesHandler, 'css-loader', 'sass-loader'],
-            },
+                use: [
+                  "style-loader",
+                  {
+                    loader: "css-loader",
+                    options: {
+                      modules: {
+                        localIdentName: "[local]",
+                      },
+                    },
+                  },
+                  {
+                    loader: "sass-loader",
+                    options: {
+                      sassOptions: {
+                        modules: true,
+                        // localIdentName: "[name]",
+                      },
+                    },
+                  },
+                ],
+              },
             {
                 test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
                 type: 'asset',
