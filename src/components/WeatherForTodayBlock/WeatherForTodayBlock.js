@@ -54,20 +54,31 @@ class WeatherForTodayBlock {
     let result = ''
     const wordsData = this.wordsData
     const currentTemperatureС = data.temp_c;
+    const currentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.currentTemperatureC + currentTemperatureС )
     const currentTemperatureF = data.temp_f;
+    const currentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.currentTemperatureF + currentTemperatureF )
     const summary = data.condition.text;
     const apparentTemperatureC = data.feelslike_c;
+    const apparentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.apparentTemperatureC + apparentTemperatureC )
     const apparentTemperatureF = data.feelslike_f;
+    const apparentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.apparentTemperatureF + apparentTemperatureF )
     const humidity = data.humidity;
     const wind_kpm = Math.round(data.wind_kph * 10 / 60);
     const weatherIconHref = data.condition.icon
+    if(this.selectedTemp === "0") {
+      currentTemperatureCItem.classList.add("item_temp_unactive")
+      apparentTemperatureCItem.classList.add("item_temp_unactive")
+    } else {
+      currentTemperatureFItem.classList.add("item_temp_unactive")
+      apparentTemperatureFItem.classList.add("item_temp_unactive")
+    }
     if (currentTemperatureС &&currentTemperatureF && summary && apparentTemperatureC && apparentTemperatureF && humidity && wind_kpm && weatherIconHref) {
       result = create("ul", s.currentWeather_list,[
-        create('li', "currentWeather_item item_tempC item_temp_unactive", wordsData.currentTemperatureC + currentTemperatureС ),
-        create('li', "currentWeather_item item_tempF", wordsData.currentTemperatureF + currentTemperatureF ),
+        currentTemperatureCItem,
+        currentTemperatureFItem,
         create('li', s.currentWeather_item, [wordsData.generalDescription + summary, create('img', s.weather_icon, null, null, ["src", weatherIconHref] )] ),
-        create('li', "currentWeather_item item_tempC item_temp_unactive", wordsData.apparentTemperatureC + apparentTemperatureC ),
-        create('li', "currentWeather_item item_tempF", wordsData.apparentTemperatureF + apparentTemperatureF ),
+        apparentTemperatureCItem,
+        apparentTemperatureFItem,
         create('li', s.currentWeather_item, wordsData.windSpeed_ms + wind_kpm ),
         create('li', s.currentWeather_item, wordsData.humidity + humidity ),
       ])

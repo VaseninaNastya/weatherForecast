@@ -52,12 +52,19 @@ class WeatherForThreeDaysBlock {
     let result = ''
     const wordsData = this.wordsData
     const currentTemperatureС = data.temp_c;
+    const currentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.currentTemperatureC + currentTemperatureС )
     const currentTemperatureF = data.temp_f;
+    const currentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.currentTemperatureF + currentTemperatureF )
+    if(this.selectedTemp === "0") {
+      currentTemperatureCItem.classList.add("item_temp_unactive")
+    } else {
+      currentTemperatureFItem.classList.add("item_temp_unactive")
+    }
     const weatherIconHref = data.condition.icon
     if (currentTemperatureС &&currentTemperatureF && weatherIconHref) {
       result = create("ul", s.currentWeather_list,[
-        create('li', "currentWeather_item item_tempC item_temp_unactive", wordsData.currentTemperatureC + currentTemperatureС ),
-        create('li', "currentWeather_item item_tempF", wordsData.currentTemperatureF + currentTemperatureF ),
+        currentTemperatureCItem,
+        currentTemperatureFItem,
         create('li', s.currentWeather_item,  create('img', s.weather_icon, null, null, ["src", weatherIconHref] ) ),
       ])
       
