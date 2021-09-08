@@ -14,4 +14,6 @@ module.exports = {
   humidity: "Влажность: ",
   F:"°F",
   C: "°C",
+  WeatherForToday: "Погода на сегодня",
+  WeatherForThreeDays: "Погода на три дня",
 };
