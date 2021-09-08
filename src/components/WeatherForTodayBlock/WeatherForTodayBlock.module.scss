@@ -2,3 +2,11 @@
   width: 100%;
   background-color: rgb(255, 255, 255, 0.5);
 }
+.weather_icon{
+  max-width: 20px;
+  max-height: 20px;
+}
+.currentWeather_item{
+  display: flex;
+  align-items: center;
+}

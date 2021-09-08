@@ -15,10 +15,15 @@ class MainBlock {
     await this.getData();
     const controlBlock = new ControlBlock(this.selectedLanguage, this.wordsData[this.selectedLanguage]);
     const controlBlocklElem = controlBlock.generateLayout()
-    const weatherForTodayBlock = new WeatherForTodayBlock(this.wordsData[this.selectedLanguage])
+    const weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.wordsData[this.selectedLanguage])
     const weatherForToday = await weatherForTodayBlock.generateLayout()
-    const backGroundImg = this.pictureData.urls.full 
-    const mainContainer = create("div", s.wpapper, create("div", s.container, [controlBlocklElem, weatherForToday]), null, ['style' ,"background-image: url(" + `${backGroundImg}` + ")"]);
+    const mainContainer = create("div", s.wpapper, create("div", s.container, [controlBlocklElem, weatherForToday]));
+
+    if(this.pictureData && this.pictureData.urls && this.pictureData.urls.full){
+      const backGroundImg = this.pictureData.urls.full 
+      mainContainer.setAttribute('style' , "background-image: url(" + `${backGroundImg}` + ")")
+    }
+
     return mainContainer;
   }
   async getData() {
