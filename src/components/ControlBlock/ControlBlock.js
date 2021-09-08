@@ -9,8 +9,10 @@ class ControlBlock {
     this.units = "°C";
   }
   generateLayout() {
-      const languageToggle = new Toggle([this.wordsData.ru, this.wordsData.en], this.selectedLanguage, "weatherForecast_language");
-      return languageToggle.generateLayout()
+      const languageToggle = new Toggle([this.wordsData.ru, this.wordsData.en], this.selectedLanguage, "weatherForecast_language" );
+      let result =languageToggle.generateLayout()
+      result.classList.add("toggle_container_lang")
+      return result
   }
   getLanguage() {
     return this.selectedLanguage;

@@ -7,32 +7,39 @@ class WeatherForTodayBlock {
   constructor(selectedLanguage, wordsData){
     this.selectedLanguage = selectedLanguage
     this.wordsData = wordsData
-
+    this.timer = null;
   }
   async generateLayout() {
     const wordsData = this.wordsData
     await this.getCityData();
     const cityName = this.cityData.city;
-    let lang = this.selectedLanguage === '0' ? "ru" : "en"
-    
-    await this.getWeatherData(this.cityData.city, 1, lang);
+    this.lang = this.selectedLanguage === '0' ? "ru" : "en"
+    console.log("this.selectedLanguage",this.selectedLanguage)
+    await this.getWeatherData(this.cityData.city, 1, this.lang);
     const countryName = this.weatherData.location.country;
-    const date = new Date() 
-    let langForDate = this.selectedLanguage === '0' ? "ru" : "en-GB"
-    const currentDate = date.toLocaleString(langForDate , {day: "numeric",month:"long",  weekday: "short"})
-    
+    const currentDate = this.showTime()
     const currentWeather = this.currentWeather(this.weatherData.current);
     const weatherForTodayContainer = create(
       "div",
       s.logicalBlock,
       create("ul", s.weatherForToday_list, [
         create("li", s.weatherForToday_item, wordsData.city + cityName + wordsData.country + countryName),
-        create("li", s.weatherForToday_item, wordsData.todaysDate + currentDate),
+        create("li", s.weatherForToday_item, [wordsData.todaysDate, create("span", s.currentDate, currentDate)]),
         create("li", s.weatherForToday_item, [create('span', null, wordsData.currentWeather), currentWeather]),
       ])
     );
+
+    
     return weatherForTodayContainer;
   }
+  startTimer(){
+    this.timer = setInterval(this.changeTime.bind(this), 1000);
+  }
+  stopTimer(){
+    clearInterval(this.timer)
+  }
+
+
   async getCityData() {
     const cityAPI = new CityAPI();
     this.cityData = await cityAPI.getCityData();
@@ -64,8 +71,20 @@ class WeatherForTodayBlock {
     }
     return result
   }
-  createTimer(){
-
+  showTime(){
+    let result = ''
+    const locale = this.selectedLanguage === '0' ? "ru" : "en"
+    const date = new Date() 
+    const currentDate = date.toLocaleString(locale , {day: "numeric",month:"long",  weekday: "short",
+    hour: 'numeric', minute: 'numeric', second: 'numeric'})
+    if(currentDate) result = currentDate
+    return result
+  };
+  changeTime(){
+    console.log("ddddd")
+    if(document.querySelector(".currentDate")) document.querySelector(".currentDate").innerText = this.showTime()
   }
+
+
 }
 export default WeatherForTodayBlock;

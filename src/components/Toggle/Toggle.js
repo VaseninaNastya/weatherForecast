@@ -2,7 +2,7 @@ import create from "../../utils/create.utils.js";
 import s from "./Toggle.module.scss";
 
 class Toggle {
-  constructor(innerTextArr, selectedItem, localStorageKey) {
+  constructor(innerTextArr, selectedItem, localStorageKey ) {
     this.innerTextFirstItem = innerTextArr[0];
     this.innerTextSecondtItem = innerTextArr[1];
     this.selectedItem = selectedItem;
