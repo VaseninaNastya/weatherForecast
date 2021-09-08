@@ -1,7 +1,7 @@
 module.exports = {
   ru: "rus.",
   en: "eng.",
-  city: "City", 
+  city: "City: ", 
   country: "; Country: ",
   todaysDate: "Today's date: ", 
   currentWeather: "Current weather: ",

@@ -2,22 +2,35 @@ import create from "../../utils/create.utils.js";
 import s from "./Toggle.module.scss";
 
 class Toggle {
-  constructor(innerTextArr, selectedItem) {
+  constructor(innerTextArr, selectedItem, localStorageKey) {
     this.innerTextFirstItem = innerTextArr[0];
     this.innerTextSecondtItem = innerTextArr[1];
     this.selectedItem = selectedItem;
+    this.localStorageKey = localStorageKey;
   }
   generateLayout() {
+    const firstItem = create("div", s.toggle_item, this.innerTextFirstItem, null, ["data-value", 0]);
+    const secondtItem = create("div", s.toggle_item, this.innerTextSecondtItem,  null, ["data-value", 1]);
+    if(this.selectedItem === "0"){
+      firstItem.classList.add("toggle_item_selected")
+    } else {
+      secondtItem.classList.add("toggle_item_selected")
+    }
     this.toggleContainer = create("div", s.toggle_container, [
-      create("div", s.toggle_item, this.innerTextFirstItem),
-      create("div", s.toggle_item, this.innerTextSecondtItem),
+      firstItem,
+      secondtItem,
     ]);
     this.togglerContainerEventListener();
     return this.toggleContainer;
   }
   togglerContainerEventListener() {
+  
     this.toggleContainer.addEventListener('click',(e) => {
-      console.log(e.target);
+      if(e.currentTarget.querySelector('.toggle_item_selected')){
+        e.currentTarget.querySelector('.toggle_item_selected').classList.remove("toggle_item_selected")
+        e.target.classList.add("toggle_item_selected")
+        localStorage.setItem(this.localStorageKey, e.target.getAttribute("data-value"))
+      }
     });
   }
 }
