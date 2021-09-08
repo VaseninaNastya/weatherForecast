@@ -4,8 +4,9 @@ import CityAPI from "../CityAPI/CityAPI";
 import WeatherAPI from "../WeatherAPI/WeatherAPI";
 
 class WeatherForTodayBlock {
-  constructor(selectedLanguage, wordsData){
+  constructor(selectedLanguage, selectedTemp,  wordsData){
     this.selectedLanguage = selectedLanguage
+    this.selectedTemp = selectedTemp
     this.wordsData = wordsData
     this.timer = null;
   }
@@ -14,7 +15,6 @@ class WeatherForTodayBlock {
     await this.getCityData();
     const cityName = this.cityData.city;
     this.lang = this.selectedLanguage === '0' ? "ru" : "en"
-    console.log("this.selectedLanguage",this.selectedLanguage)
     await this.getWeatherData(this.cityData.city, 1, this.lang);
     const countryName = this.weatherData.location.country;
     const currentDate = this.showTime()
@@ -53,17 +53,21 @@ class WeatherForTodayBlock {
   currentWeather (data) {
     let result = ''
     const wordsData = this.wordsData
-    const currentTemperature = data.temp_c;
+    const currentTemperatureС = data.temp_c;
+    const currentTemperatureF = data.temp_f;
     const summary = data.condition.text;
-    const apparentTemperature = data.feelslike_c;
+    const apparentTemperatureC = data.feelslike_c;
+    const apparentTemperatureF = data.feelslike_f;
     const humidity = data.humidity;
     const wind_kpm = Math.round(data.wind_kph * 10 / 60);
     const weatherIconHref = data.condition.icon
-    if (currentTemperature && summary && apparentTemperature && humidity && wind_kpm && weatherIconHref) {
+    if (currentTemperatureС &&currentTemperatureF && summary && apparentTemperatureC && apparentTemperatureF && humidity && wind_kpm && weatherIconHref) {
       result = create("ul", s.currentWeather_list,[
-        create('li', s.currentWeather_item, wordsData.сurrentTemperature + currentTemperature ),
+        create('li', "currentWeather_item item_tempC item_temp_unactive", wordsData.currentTemperatureC + currentTemperatureС ),
+        create('li', "currentWeather_item item_tempF", wordsData.currentTemperatureF + currentTemperatureF ),
         create('li', s.currentWeather_item, [wordsData.generalDescription + summary, create('img', s.weather_icon, null, null, ["src", weatherIconHref] )] ),
-        create('li', s.currentWeather_item, wordsData.apparentTemperature + apparentTemperature ),
+        create('li', "currentWeather_item item_tempC item_temp_unactive", wordsData.apparentTemperatureC + apparentTemperatureC ),
+        create('li', "currentWeather_item item_tempF", wordsData.apparentTemperatureF + apparentTemperatureF ),
         create('li', s.currentWeather_item, wordsData.windSpeed_ms + wind_kpm ),
         create('li', s.currentWeather_item, wordsData.humidity + humidity ),
       ])
@@ -81,9 +85,9 @@ class WeatherForTodayBlock {
     return result
   };
   changeTime(){
-    console.log("ddddd")
     if(document.querySelector(".currentDate")) document.querySelector(".currentDate").innerText = this.showTime()
   }
+  
 
 
 }

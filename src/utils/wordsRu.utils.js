@@ -5,9 +5,13 @@ module.exports = {
   country: "; Страна: ",
   todaysDate: "Сегодняшняя дата: ", 
   currentWeather: "Погода сегодня: ",
-  currentTemperature: "температура: ",
+  currentTemperatureC: "Температура (°C): ",
+  currentTemperatureF: "Температура (°F): ",
   generalDescription: "Описание погоды: ",
-  apparentTemperature: "Ощущаемся температура: ",
+  apparentTemperatureC: "Ощущаемся температура (°C): ",
+  apparentTemperatureF: "Ощущаемся температура (°F): ",
   windSpeed_ms: "Скорость ветра (м/с): ",
-  humidity: "Влажность: "
+  humidity: "Влажность: ",
+  F:"°F",
+  C: "°C",
 };

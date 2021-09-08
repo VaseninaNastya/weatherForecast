@@ -2,11 +2,12 @@ import create from "../../utils/create.utils.js";
 import s from "./Toggle.module.scss";
 
 class Toggle {
-  constructor(innerTextArr, selectedItem, localStorageKey ) {
+  constructor(innerTextArr, selectedItem, localStorageKey, containerClass ) {
     this.innerTextFirstItem = innerTextArr[0];
     this.innerTextSecondtItem = innerTextArr[1];
     this.selectedItem = selectedItem;
     this.localStorageKey = localStorageKey;
+    this.containerClass = containerClass
   }
   generateLayout() {
     const firstItem = create("div", s.toggle_item, this.innerTextFirstItem, null, ["data-value", 0]);
@@ -20,13 +21,14 @@ class Toggle {
       firstItem,
       secondtItem,
     ]);
+    this.toggleContainer.classList.add(this.containerClass )
     this.togglerContainerEventListener();
     return this.toggleContainer;
   }
   togglerContainerEventListener() {
   
     this.toggleContainer.addEventListener('click',(e) => {
-      if(e.currentTarget.querySelector('.toggle_item_selected')){
+      if(e.currentTarget.querySelector('.toggle_item')){
         e.currentTarget.querySelector('.toggle_item_selected').classList.remove("toggle_item_selected")
         e.target.classList.add("toggle_item_selected")
         localStorage.setItem(this.localStorageKey, e.target.getAttribute("data-value"))

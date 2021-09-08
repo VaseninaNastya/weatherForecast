@@ -5,9 +5,13 @@ module.exports = {
   country: "; Country: ",
   todaysDate: "Today's date: ", 
   currentWeather: "Current weather: ",
-  currentTemperature: "Current temperature: ",
+  currentTemperatureC: "Current temperature (°C): ",
+  currentTemperatureF: "Current temperature (°F): ",
   generalDescription: "General description: ",
-  apparentTemperature: "Apparent temperature: ",
+  apparentTemperatureC: "Apparent temperature (°C): ",
+  apparentTemperatureF: "Apparent temperature (°F): ",
   windSpeed_ms: "Wind speed (m/s): ",
-  humidity: "Humidity: "
+  humidity: "Humidity: ",
+  F:"°F",
+  C: "°C",
 };

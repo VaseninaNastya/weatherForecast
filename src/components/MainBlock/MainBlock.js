@@ -10,7 +10,7 @@ class MainBlock {
   constructor(){
     this.wordsData = [wordsRu,wordsEn]
     this.selectedLanguage = localStorage.getItem('weatherForecast_language') || 0;
-
+    this.selectedTemp =  localStorage.getItem('weatherForecast_temp') || 0 ;
   }
   async generateLayout() {
     await this.getData();
@@ -30,12 +30,12 @@ const container = await this.generateContent()
     
   }
   async generateContent(){
-    const controlBlock = new ControlBlock(this.selectedLanguage, this.wordsData[this.selectedLanguage]);
+    const controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
     const controlBlocklElem = controlBlock.generateLayout()
     if(this.weatherForTodayBlock) {
       this.weatherForTodayBlock.stopTimer()
     }
-    this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.wordsData[this.selectedLanguage])
+    this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage])
     const weatherForToday = await this.weatherForTodayBlock.generateLayout()
     this.weatherForTodayBlock.startTimer()
     const container = create("div", s.container, [controlBlocklElem, weatherForToday])
@@ -43,14 +43,29 @@ const container = await this.generateContent()
   }
  changeLang(){
     document.querySelector('.wrapper').addEventListener('click',async (e)=>{
-      if(e.target.classList.contains("toggle_item")){
+      if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_lang")){
         this.selectedLanguage = e.target.getAttribute("data-value")
-        localStorage.setItem('weatherForecast_language', e.target.getAttribute("data-value"))
+        //localStorage.setItem('weatherForecast_language', e.target.getAttribute("data-value"))
+        const content = await this.generateContent();
+        document.querySelector('.wrapper').innerHTML = null
+        document.querySelector('.wrapper').append(content)
       }
-      const content = await this.generateContent();
-      document.querySelector('.wrapper').innerHTML = null
-      document.querySelector('.wrapper').append(content)
-      
+      if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_temp")){
+        console.log("ssss")
+        this.selectedTemp = e.target.getAttribute("data-value")
+        //localStorage.setItem('weatherForecast_temp', e.target.getAttribute("data-value"))
+        if(document.querySelector(".item_temp_unactive")){
+          document.querySelectorAll(".item_temp_unactive").forEach((item)=>{
+            item.classList.remove("item_temp_unactive")
+          })
+        }
+        if(this.selectedTemp === "0" && document.querySelector(".item_tempC")){
+          document.querySelectorAll(".item_tempC").forEach((item)=>{item.classList.add("item_temp_unactive")})
+        }
+        if(this.selectedTemp === "1" && document.querySelector(".item_tempF")){
+          document.querySelectorAll(".item_tempF").forEach((item)=>{item.classList.add("item_temp_unactive")})
+        }
+      }
     })
   }
 
