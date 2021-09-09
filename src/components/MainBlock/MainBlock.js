@@ -2,6 +2,7 @@ import create from "../../utils/create.utils.js";
 import s from "./MainBlock.module.scss";
 import PictureAPI from "./../PictureAPI/PictureAPI";
 import WeatherForTodayBlock from "../WeatherForTodayBlock/WeatherForTodayBlock.js"
+import WeatherForThreeDaysBlock from "../WeatherForThreeDaysBlock/WeatherForThreeDaysBlock.js"
 import ControlBlock from "../ControlBlock/ControlBlock.js"
 import wordsEn from "../../utils/wordsEn.utils";
 import wordsRu from "../../utils/wordsRu.utils";
@@ -32,13 +33,19 @@ const container = await this.generateContent()
   async generateContent(){
     const controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
     const controlBlocklElem = controlBlock.generateLayout()
-    if(this.weatherForTodayBlock) {
+    if(this.weatherForTodayBlock ) {
       this.weatherForTodayBlock.stopTimer()
     }
+    if(this.weatherForThreeDayBlock ) {
+      this.weatherForThreeDayBlock.stopTimer()
+    }
     this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage])
+    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage])
     const weatherForToday = await this.weatherForTodayBlock.generateLayout()
+    const weatherForThreeDay = await this.weatherForThreeDayBlock.generateLayout()
     this.weatherForTodayBlock.startTimer()
-    const container = create("div", s.container, [controlBlocklElem, weatherForToday])
+    this.weatherForThreeDayBlock.startTimer()
+    const container = create("div", s.container, [controlBlocklElem, weatherForToday, weatherForThreeDay])
     return container
   }
  changeLang(){

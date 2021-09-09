@@ -14,4 +14,9 @@ module.exports = {
   humidity: "Humidity: ",
   F:"°F",
   C: "°C",
+  WeatherForToday: "Weather for today",
+  WeatherForThreeDays: "Weather for three days",
+  latitude: "Latitude: ",
+  longitude: "Longitude: ",
+  weekDay: "Day of week: ",
 };
