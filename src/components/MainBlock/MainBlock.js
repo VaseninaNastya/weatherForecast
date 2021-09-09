@@ -16,14 +16,15 @@ class MainBlock {
   async generateLayout() {
     await this.getData();
 const container = await this.generateContent()
-    const mainContainer = create("div", s.wrapper, container);
+    this.mainContainer = create("div", s.wrapper, container);
     
     if(this.pictureData && this.pictureData.urls && this.pictureData.urls.full){
+      console.log("this.pictureData", this.pictureData)
       const backGroundImg = this.pictureData.urls.full 
-      mainContainer.setAttribute('style' , "background-image: url(" + `${backGroundImg}` + ")")
+      this.mainContainer.setAttribute('style' , "background-image: url(" + `${backGroundImg}` + ")")
     }
     setTimeout (this.changeLang.bind(this), 100)
-    return mainContainer;
+    return this.mainContainer;
   }
   async getData() {
     const pictureAPI = new PictureAPI();
@@ -71,6 +72,13 @@ const container = await this.generateContent()
         if(this.selectedTemp === "1" && document.querySelector(".item_tempF")){
           document.querySelectorAll(".item_tempF").forEach((item)=>{item.classList.add("item_temp_unactive")})
         }
+      }
+      if(e.target.classList.contains("changeBackgroundButton")){
+        console.log("ssssqqq")
+await this.getData()
+if(this.pictureData && this.pictureData.urls && this.pictureData.urls.full){
+const backGroundImg = this.pictureData.urls.full 
+this.mainContainer.setAttribute('style' , "background-image: url(" + `${backGroundImg}` + ")")}
       }
     })
   }

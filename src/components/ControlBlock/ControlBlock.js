@@ -11,15 +11,13 @@ class ControlBlock {
   generateLayout() {
     const languageToggle = new Toggle([this.wordsData.ru, this.wordsData.en], this.selectedLanguage, "weatherForecast_language",  "toggle_container_lang");
     const tempToggle = new Toggle([this.wordsData.F, this.wordsData.C],  this.selectedTemp, "weatherForecast_temp" ,  "toggle_container_temp");
-    const controlBlockContainer = create("div", "logicalBlock", [languageToggle.generateLayout(), tempToggle.generateLayout()])
-    let result =controlBlockContainer
+    const controlBlockContainer = create("div", "logicalBlock", [languageToggle.generateLayout(), tempToggle.generateLayout(), this.changeBackgroundButton() ])
+    let result = controlBlockContainer
     return result
   }
-  getLanguage() {
-    return this.selectedLanguage;
-  }
-  getUnits() {
-    return this.selectedTemp;
-  }
+    changeBackgroundButton(){
+        this.buttonElem = create("button", s.changeBackgroundButton, this.wordsData.changeBack)
+        return this.buttonElem
+    }
 }
 export default ControlBlock;
