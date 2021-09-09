@@ -26,10 +26,14 @@ class WeatherForTodayBlock {
         create("ul", s.weatherForToday_list, [
         create("li", s.weatherForToday_item, wordsData.city + cityName + wordsData.country + countryName),
         create("li", s.weatherForToday_item, [wordsData.todaysDate, create("span", s.currentDate, currentDate)]),
-        create("li", s.weatherForToday_item, [create('span', null, wordsData.currentWeather), currentWeather]),
+       // create("li", s.weatherForToday_item, [create('span', null, wordsData.currentWeather), currentWeather]),
       ])]
     );
-
+    if(currentWeather.length){
+      currentWeather.map((item)=>{
+        weatherForTodayContainer.append(item)
+      })
+    }
     
     return weatherForTodayContainer;
   }
@@ -73,7 +77,7 @@ class WeatherForTodayBlock {
       apparentTemperatureFItem.classList.add("item_temp_unactive")
     }
     if (currentTemperatureС &&currentTemperatureF && summary && apparentTemperatureC && apparentTemperatureF && humidity && wind_kpm && weatherIconHref) {
-      result = create("ul", s.currentWeather_list,[
+      result = [
         currentTemperatureCItem,
         currentTemperatureFItem,
         create('li', s.currentWeather_item, [wordsData.generalDescription + summary, create('img', s.weather_icon, null, null, ["src", weatherIconHref] )] ),
@@ -81,7 +85,7 @@ class WeatherForTodayBlock {
         apparentTemperatureFItem,
         create('li', s.currentWeather_item, wordsData.windSpeed_ms + wind_kpm ),
         create('li', s.currentWeather_item, wordsData.humidity + humidity ),
-      ])
+      ]
       
     }
     return result

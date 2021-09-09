@@ -16,4 +16,7 @@ module.exports = {
   C: "°C",
   WeatherForToday: "Погода на сегодня",
   WeatherForThreeDays: "Погода на три дня",
+  latitude: "Широта: ",
+  longitude: "Долгота: ",
+  weekDay: "День недели: ",
 };

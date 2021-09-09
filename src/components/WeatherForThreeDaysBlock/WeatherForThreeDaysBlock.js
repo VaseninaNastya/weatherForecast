@@ -16,17 +16,24 @@ class WeatherForThreeDaysBlock {
     this.lang = this.selectedLanguage === '0' ? "ru" : "en"
     await this.getWeatherData(this.cityData.city, 3, this.lang);
     const currentDate = this.showTime()
+    const latitude = this.weatherData.location.lat
+    const longitude = this.weatherData.location.lon
     const currentWeather = this.currentWeather(this.weatherData.current);
     const weatherForTodayContainer = create(
       "div",
       s.logicalBlock,
       [create('h2', null, wordsData.WeatherForThreeDays),
       create("ul", s.weatherForToday_list, [
-        create("li", s.weatherForToday_item, [wordsData.todaysDate, create("span", s.currentWeekDate, currentDate)]),
-        create("li", s.weatherForToday_item, [create('span', null, wordsData.currentWeather), currentWeather]),
+        create("li", s.weatherForToday_item, [wordsData.todaysDate, create("span", s.weekDay, currentDate)]),
+        create("li", s.weatherForToday_item, [wordsData.latitude, latitude, wordsData.degree]),
+        create("li", s.weatherForToday_item, [wordsData.longitude, longitude, wordsData.degree]),
       ])]
     );
-
+    if(currentWeather.length){
+      currentWeather.map((item)=>{
+        weatherForTodayContainer.append(item)
+      })
+    }
     
     return weatherForTodayContainer;
   }
@@ -62,11 +69,11 @@ class WeatherForThreeDaysBlock {
     }
     const weatherIconHref = data.condition.icon
     if (currentTemperatureС &&currentTemperatureF && weatherIconHref) {
-      result = create("ul", s.currentWeather_list,[
+      result = [
         currentTemperatureCItem,
         currentTemperatureFItem,
         create('li', s.currentWeather_item,  create('img', s.weather_icon, null, null, ["src", weatherIconHref] ) ),
-      ])
+      ]
       
     }
     return result
