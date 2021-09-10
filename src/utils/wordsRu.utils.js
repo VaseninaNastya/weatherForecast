@@ -19,4 +19,6 @@ module.exports = {
   latitude: "Широта: ",
   longitude: "Долгота: ",
   weekDay: "День недели: ",
+  degree: "°",
+  changeBack: 'изменить фон',
 };

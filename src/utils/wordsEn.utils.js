@@ -19,4 +19,6 @@ module.exports = {
   latitude: "Latitude: ",
   longitude: "Longitude: ",
   weekDay: "Day of week: ",
+  degree: "°",
+  changeBack: 'change background',
 };

@@ -1,22 +1,23 @@
 import create from "../../utils/create.utils.js";
 import s from "./WeatherForTodayBlock.module.scss";
-import CityAPI from "../CityAPI/CityAPI";
 import WeatherAPI from "../WeatherAPI/WeatherAPI";
 
 class WeatherForTodayBlock {
-  constructor(selectedLanguage, selectedTemp,  wordsData){
+  constructor(selectedLanguage, selectedTemp,  wordsData, city){
     this.selectedLanguage = selectedLanguage
     this.selectedTemp = selectedTemp
     this.wordsData = wordsData
     this.timer = null;
+    this.city = city;
   }
   async generateLayout() {
     const wordsData = this.wordsData
-    await this.getCityData();
-    const cityName = this.cityData.city;
+    const cityName = this.city;
     this.lang = this.selectedLanguage === '0' ? "ru" : "en"
-    await this.getWeatherData(this.cityData.city, 1, this.lang);
+    await this.getWeatherData(cityName, 1, this.lang);
+
     const countryName = this.weatherData.location.country;
+    
     const currentDate = this.showTime()
     const currentWeather = this.currentWeather(this.weatherData.current);
     const weatherForTodayContainer = create(
@@ -26,7 +27,6 @@ class WeatherForTodayBlock {
         create("ul", s.weatherForToday_list, [
         create("li", s.weatherForToday_item, wordsData.city + cityName + wordsData.country + countryName),
         create("li", s.weatherForToday_item, [wordsData.todaysDate, create("span", s.currentDate, currentDate)]),
-       // create("li", s.weatherForToday_item, [create('span', null, wordsData.currentWeather), currentWeather]),
       ])]
     );
     if(currentWeather.length){
@@ -45,10 +45,7 @@ class WeatherForTodayBlock {
   }
 
 
-  async getCityData() {
-    const cityAPI = new CityAPI();
-    this.cityData = await cityAPI.getCityData();
-  }
+
   async getWeatherData(city, coutDays, selectedLanguage) {
     const weatherAPI = new WeatherAPI(city, coutDays, selectedLanguage);
     this.weatherData = await weatherAPI.getWeatherData();
@@ -58,17 +55,20 @@ class WeatherForTodayBlock {
     let result = ''
     const wordsData = this.wordsData
     const currentTemperatureС = data.temp_c;
-    const currentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.currentTemperatureC + currentTemperatureС )
     const currentTemperatureF = data.temp_f;
-    const currentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.currentTemperatureF + currentTemperatureF )
     const summary = data.condition.text;
     const apparentTemperatureC = data.feelslike_c;
-    const apparentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.apparentTemperatureC + apparentTemperatureC )
     const apparentTemperatureF = data.feelslike_f;
-    const apparentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.apparentTemperatureF + apparentTemperatureF )
-    const humidity = data.humidity;
+        const humidity = data.humidity;
     const wind_kpm = Math.round(data.wind_kph * 10 / 60);
     const weatherIconHref = data.condition.icon
+    const currentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.currentTemperatureC + currentTemperatureС )
+
+    const currentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.currentTemperatureF + currentTemperatureF )
+
+
+    const apparentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.apparentTemperatureC + apparentTemperatureC )
+    const apparentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.apparentTemperatureF + apparentTemperatureF )
     if(this.selectedTemp === "0") {
       currentTemperatureCItem.classList.add("item_temp_unactive")
       apparentTemperatureCItem.classList.add("item_temp_unactive")
