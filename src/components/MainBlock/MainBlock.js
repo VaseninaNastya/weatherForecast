@@ -6,30 +6,32 @@ import WeatherForThreeDaysBlock from "../WeatherForThreeDaysBlock/WeatherForThre
 import ControlBlock from "../ControlBlock/ControlBlock.js"
 import wordsEn from "../../utils/wordsEn.utils";
 import wordsRu from "../../utils/wordsRu.utils";
+import CityAPI from "../CityAPI/CityAPI";
+
+
 
 class MainBlock {
   constructor(){
-    this.wordsData = [wordsRu,wordsEn]
+    this.wordsData = [wordsRu,wordsEn];
     this.selectedLanguage = localStorage.getItem('weatherForecast_language') || 0;
     this.selectedTemp =  localStorage.getItem('weatherForecast_temp') || 0 ;
-    this.backgroundUrl = ''
+    this.backgroundUrl = '';
+    this.city = ''
+
   }
   async generateLayout() {
-const container = await this.generateContent()
-    this.mainContainer = create("div", s.wrapper, container);
-    
-
     await this.getBackgroundUrl()
-   
-
+    await this.getCityData()
+    const container = await this.generateContent()
+    this.mainContainer = create("div", s.wrapper, container);
     this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
     setTimeout (this.changeLang.bind(this), 100)
     return this.mainContainer;
   }
-  async getData() {
-    const pictureAPI = new PictureAPI();
-    this.pictureData =   await pictureAPI.getPicture();
-    
+  async getCityData() {
+    const cityAPI = new CityAPI();
+    const cityData = await cityAPI.getCityData();
+    this.city = cityData.city
   }
   async generateContent(){
     const controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
@@ -40,20 +42,23 @@ const container = await this.generateContent()
     if(this.weatherForThreeDayBlock ) {
       this.weatherForThreeDayBlock.stopTimer()
     }
-    this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage])
-    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage])
-    const weatherForToday = await this.weatherForTodayBlock.generateLayout()
-    const weatherForThreeDay = await this.weatherForThreeDayBlock.generateLayout()
-    this.weatherForTodayBlock.startTimer()
-    this.weatherForThreeDayBlock.startTimer()
-    const container = create("div", s.container, [controlBlocklElem, weatherForToday, weatherForThreeDay])
-    return container
+    this.container = create("div", s.container, [controlBlocklElem])
+    await this.createWeatherBlock()
+    return this.container
+  }
+  async createWeatherBlock(){
+    this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city)
+    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city)
+    this.weatherForToday = await this.weatherForTodayBlock.generateLayout()
+    this.weatherForThreeDay = await this.weatherForThreeDayBlock.generateLayout()
+    this.container.append(this.weatherForToday)
+    this.container.append(this.weatherForThreeDay)
   }
   async getBackgroundUrl(){
     let url = ''
-    await this.getData()
-    if(this.pictureData && this.pictureData.urls && this.pictureData.urls.full){
-    url = this.pictureData.urls.full}
+    const pictureAPI = new PictureAPI();
+    this.pictureData =   await pictureAPI.getPicture();
+    url = this.pictureData.urls.regular
     this.backgroundUrl = url
     
   }
@@ -85,6 +90,16 @@ const container = await this.generateContent()
         e.preventDefault()
         await this.getBackgroundUrl()
         this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
+      }
+
+    })
+    document.querySelector('.wrapper').addEventListener('keydown',async (e)=>{
+      if(e.target.classList.contains("searchCityInput") && e.code === 'Enter'){
+        console.log("dddd")
+        this.city = e.target.value
+this.weatherForToday.remove()
+this.weatherForThreeDay.remove()
+        this.createWeatherBlock()
       }
     })
   }

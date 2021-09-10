@@ -1,21 +1,20 @@
 import create from "../../utils/create.utils.js";
 import s from "./WeatherForTodayBlock.module.scss";
-import CityAPI from "../CityAPI/CityAPI";
 import WeatherAPI from "../WeatherAPI/WeatherAPI";
 
 class WeatherForTodayBlock {
-  constructor(selectedLanguage, selectedTemp,  wordsData){
+  constructor(selectedLanguage, selectedTemp,  wordsData, city){
     this.selectedLanguage = selectedLanguage
     this.selectedTemp = selectedTemp
     this.wordsData = wordsData
     this.timer = null;
+    this.city = city;
   }
   async generateLayout() {
     const wordsData = this.wordsData
-    await this.getCityData();
-    const cityName = this.cityData.city;
+    const cityName = this.city;
     this.lang = this.selectedLanguage === '0' ? "ru" : "en"
-    await this.getWeatherData(this.cityData.city, 1, this.lang);
+    await this.getWeatherData(cityName, 1, this.lang);
 
     const countryName = this.weatherData.location.country;
     
@@ -46,10 +45,7 @@ class WeatherForTodayBlock {
   }
 
 
-  async getCityData() {
-    const cityAPI = new CityAPI();
-    this.cityData = await cityAPI.getCityData();
-  }
+
   async getWeatherData(city, coutDays, selectedLanguage) {
     const weatherAPI = new WeatherAPI(city, coutDays, selectedLanguage);
     this.weatherData = await weatherAPI.getWeatherData();
