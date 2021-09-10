@@ -33,7 +33,6 @@ class WeatherForThreeDaysBlock {
         weatherForTodayContainer.append(item)
       })
     }
-    
     return weatherForTodayContainer;
   }
   startTimer(){
@@ -42,9 +41,6 @@ class WeatherForThreeDaysBlock {
   stopTimer(){
     clearInterval(this.timer)
   }
-
-
-
   async getWeatherData(city, coutDays, selectedLanguage) {
     const weatherAPI = new WeatherAPI(city, coutDays, selectedLanguage);
     this.weatherData = await weatherAPI.getWeatherData();

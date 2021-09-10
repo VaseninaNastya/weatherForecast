@@ -7,7 +7,7 @@ import ControlBlock from "../ControlBlock/ControlBlock.js"
 import wordsEn from "../../utils/wordsEn.utils";
 import wordsRu from "../../utils/wordsRu.utils";
 import CityAPI from "../CityAPI/CityAPI";
-
+import MapsAPI from "../MapsAPI/MapsAPI";
 
 
 class MainBlock {
@@ -22,14 +22,21 @@ class MainBlock {
   async generateLayout() {
     await this.getBackgroundUrl()
     await this.getCityData()
+    const mapContainer = create('div', null, null, null, ['id', 'map'])
     const container = await this.generateContent()
-    this.mainContainer = create("div", s.wrapper, container);
+    this.mainContainer = create("div", s.wrapper, [container,  mapContainer ]);
     this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
     setTimeout (this.changeLang.bind(this), 100)
+    setTimeout (await this.createMap.bind(this), 100)
     return this.mainContainer;
+  }
+  async createMap(){
+    const mapsAPI = new MapsAPI()
+    const map = await mapsAPI.generateLayout()
   }
   async getCityData() {
     const cityAPI = new CityAPI();
+    
     const cityData = await cityAPI.getCityData();
     this.city = cityData.city
   }
