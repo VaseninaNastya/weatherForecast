@@ -16,7 +16,9 @@ class WeatherForTodayBlock {
     const cityName = this.cityData.city;
     this.lang = this.selectedLanguage === '0' ? "ru" : "en"
     await this.getWeatherData(this.cityData.city, 1, this.lang);
+
     const countryName = this.weatherData.location.country;
+    
     const currentDate = this.showTime()
     const currentWeather = this.currentWeather(this.weatherData.current);
     const weatherForTodayContainer = create(
@@ -26,7 +28,6 @@ class WeatherForTodayBlock {
         create("ul", s.weatherForToday_list, [
         create("li", s.weatherForToday_item, wordsData.city + cityName + wordsData.country + countryName),
         create("li", s.weatherForToday_item, [wordsData.todaysDate, create("span", s.currentDate, currentDate)]),
-       // create("li", s.weatherForToday_item, [create('span', null, wordsData.currentWeather), currentWeather]),
       ])]
     );
     if(currentWeather.length){
@@ -58,17 +59,20 @@ class WeatherForTodayBlock {
     let result = ''
     const wordsData = this.wordsData
     const currentTemperatureС = data.temp_c;
-    const currentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.currentTemperatureC + currentTemperatureС )
     const currentTemperatureF = data.temp_f;
-    const currentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.currentTemperatureF + currentTemperatureF )
     const summary = data.condition.text;
     const apparentTemperatureC = data.feelslike_c;
-    const apparentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.apparentTemperatureC + apparentTemperatureC )
     const apparentTemperatureF = data.feelslike_f;
-    const apparentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.apparentTemperatureF + apparentTemperatureF )
-    const humidity = data.humidity;
+        const humidity = data.humidity;
     const wind_kpm = Math.round(data.wind_kph * 10 / 60);
     const weatherIconHref = data.condition.icon
+    const currentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.currentTemperatureC + currentTemperatureС )
+
+    const currentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.currentTemperatureF + currentTemperatureF )
+
+
+    const apparentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.apparentTemperatureC + apparentTemperatureC )
+    const apparentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.apparentTemperatureF + apparentTemperatureF )
     if(this.selectedTemp === "0") {
       currentTemperatureCItem.classList.add("item_temp_unactive")
       apparentTemperatureCItem.classList.add("item_temp_unactive")

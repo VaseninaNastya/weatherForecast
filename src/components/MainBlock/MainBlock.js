@@ -12,17 +12,17 @@ class MainBlock {
     this.wordsData = [wordsRu,wordsEn]
     this.selectedLanguage = localStorage.getItem('weatherForecast_language') || 0;
     this.selectedTemp =  localStorage.getItem('weatherForecast_temp') || 0 ;
+    this.backgroundUrl = ''
   }
   async generateLayout() {
-    await this.getData();
 const container = await this.generateContent()
     this.mainContainer = create("div", s.wrapper, container);
     
-    if(this.pictureData && this.pictureData.urls && this.pictureData.urls.full){
-      console.log("this.pictureData", this.pictureData)
-      const backGroundImg = this.pictureData.urls.full 
-      this.mainContainer.setAttribute('style' , "background-image: url(" + `${backGroundImg}` + ")")
-    }
+
+    await this.getBackgroundUrl()
+   
+
+    this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
     setTimeout (this.changeLang.bind(this), 100)
     return this.mainContainer;
   }
@@ -49,6 +49,14 @@ const container = await this.generateContent()
     const container = create("div", s.container, [controlBlocklElem, weatherForToday, weatherForThreeDay])
     return container
   }
+  async getBackgroundUrl(){
+    let url = ''
+    await this.getData()
+    if(this.pictureData && this.pictureData.urls && this.pictureData.urls.full){
+    url = this.pictureData.urls.full}
+    this.backgroundUrl = url
+    
+  }
  changeLang(){
     document.querySelector('.wrapper').addEventListener('click',async (e)=>{
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_lang")){
@@ -74,11 +82,9 @@ const container = await this.generateContent()
         }
       }
       if(e.target.classList.contains("changeBackgroundButton")){
-        console.log("ssssqqq")
-await this.getData()
-if(this.pictureData && this.pictureData.urls && this.pictureData.urls.full){
-const backGroundImg = this.pictureData.urls.full 
-this.mainContainer.setAttribute('style' , "background-image: url(" + `${backGroundImg}` + ")")}
+        e.preventDefault()
+        await this.getBackgroundUrl()
+        this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
       }
     })
   }
