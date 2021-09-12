@@ -3,10 +3,19 @@
     background-color: white;
     width: fit-content;
     margin-right: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
 }
 .toggle_item{
     padding: 5px;
     cursor: pointer;
+}
+.toggle_container .toggle_item:first-child{
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+}
+.toggle_item:hover,
+.toggle_item:active{
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 .toggle_item_selected{
     background-color: yellowgreen;

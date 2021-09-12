@@ -28,9 +28,11 @@ class MainBlock {
     this.oneDayWeatherData = await this.getWeatherData(this.city , 1, this.selectedLanguage)
     this.threeDaysWeatherData = await this.getWeatherData(this.city , 3, this.selectedLanguage)
     const container = await this.generateContent()
-    const controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
-    const controlBlocklElem = controlBlock.generateLayout()
-    const header = create("header", null, create('div', s.container, controlBlocklElem)) 
+    this.controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
+    this.controlBlocklElem = this.controlBlock.generateLayout()
+    this.headerContainer = create('div', s.container, this.controlBlocklElem)
+    const header = create("header", null, this.headerContainer) 
+
     this.mainContainer = create("div", s.wrapper, [header, container]);
     this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
     setTimeout (this.changeLangAndCityListener.bind(this), 100)
@@ -87,8 +89,13 @@ class MainBlock {
     document.querySelector('.wrapper').addEventListener('click',async (e)=>{
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_lang")){
         this.selectedLanguage = e.target.getAttribute("data-value")
+        this.headerContainer.innerHTML = null
         this.weatherForToday.remove()
         this.weatherForThreeDay.remove()
+        
+        this.controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
+        this.controlBlocklElem = this.controlBlock.generateLayout()
+        this.controlBlocklElem.map(item => this.headerContainer.append(item))
         await this.createWeatherBlock()
       }
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_temp")){

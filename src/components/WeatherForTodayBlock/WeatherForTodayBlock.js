@@ -46,6 +46,7 @@ class WeatherForTodayBlock {
     let result = ''
     const wordsData = this.wordsData,
     currentTemperatureС = data.temp_c,
+    
     currentTemperatureF = data.temp_f,
     summary = data.condition.text,
     apparentTemperatureC = data.feelslike_c,
@@ -64,7 +65,7 @@ class WeatherForTodayBlock {
       currentTemperatureFItem.classList.add("item_temp_unactive")
       apparentTemperatureFItem.classList.add("item_temp_unactive")
     }
-    if (currentTemperatureС &&currentTemperatureF && summary && apparentTemperatureC && apparentTemperatureF && humidity && wind_kpm && weatherIconHref) {
+
       result = [
         currentTemperatureCItem,
         currentTemperatureFItem,
@@ -75,7 +76,7 @@ class WeatherForTodayBlock {
         create('li', s.weather_item, wordsData.humidity + humidity ),
       ]
       
-    }
+    
     return result
   }
   showTime(){
