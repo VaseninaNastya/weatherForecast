@@ -74,26 +74,20 @@ class MainBlock {
     this.weatherContainer.append(this.weatherForThreeDay)
   }
   async getBackgroundUrl(){
-    let url = ''
     const pictureAPI = new PictureAPI();
-    this.pictureData =   await pictureAPI.getPicture();
-    url = this.pictureData.urls.regular
-    this.backgroundUrl = url
-    
+    this.pictureData =  await pictureAPI.getPicture();
+    this.backgroundUrl = this.pictureData.urls.regular
   }
  changeLang(){
     document.querySelector('.wrapper').addEventListener('click',async (e)=>{
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_lang")){
         this.selectedLanguage = e.target.getAttribute("data-value")
-        /*localStorage.setItem('weatherForecast_language', e.target.getAttribute("data-value"))
-        const content = await this.generateContent();*/
         this.weatherForToday.remove()
         this.weatherForThreeDay.remove()
         await this.createWeatherBlock()
       }
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_temp")){
         this.selectedTemp = e.target.getAttribute("data-value")
-        //localStorage.setItem('weatherForecast_temp', e.target.getAttribute("data-value"))
         if(document.querySelector(".item_temp_unactive")){
           document.querySelectorAll(".item_temp_unactive").forEach((item)=>{
             item.classList.remove("item_temp_unactive")
