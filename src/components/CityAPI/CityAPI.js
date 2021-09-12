@@ -4,7 +4,7 @@ class CityAPI {
 
   }
   /*  Users   */
-  async getCityData() {
+  async getData() {
     return fetch(this.API_SERVER + '?token=f448fbc106419d' , {
       method: "GET",
     })

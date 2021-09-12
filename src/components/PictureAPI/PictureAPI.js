@@ -4,7 +4,7 @@ class PictureAPI {
 
   }
   /*  Users   */
-  async getPicture() {
+  async getData() {
     return fetch(this.API_SERVER + '?orientation=landscape&per_page=1&query=nature&utm_source=WeatherForecast&utm_medium=referral&client_id=JToQOKVPeE9Nan0sjmS0L7_K8mdz5P20FqHzCFuu0oI' , {
       method: "GET",
     })
