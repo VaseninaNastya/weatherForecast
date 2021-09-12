@@ -7,8 +7,8 @@ import ControlBlock from "../ControlBlock/ControlBlock.js"
 import wordsEn from "../../utils/wordsEn.utils";
 import wordsRu from "../../utils/wordsRu.utils";
 import CityAPI from "../CityAPI/CityAPI";
-
-
+import MapsAPI from "../MapsAPI/MapsAPI";
+import WeatherAPI from "../WeatherAPI/WeatherAPI";
 
 class MainBlock {
   constructor(){
@@ -16,64 +16,78 @@ class MainBlock {
     this.selectedLanguage = localStorage.getItem('weatherForecast_language') || 0;
     this.selectedTemp =  localStorage.getItem('weatherForecast_temp') || 0 ;
     this.backgroundUrl = '';
-    this.city = ''
-
+    this.city = '';
+    this.longitude = ''
+    this.latitude = ''
   }
   async generateLayout() {
     await this.getBackgroundUrl()
     await this.getCityData()
+    this.oneDayWeatherData = await this.getWeatherData(this.city , 1, this.selectedLanguage)
+    this.threeDaysWeatherData = await this.getWeatherData(this.city , 3, this.selectedLanguage)
+    this.latitude = this.oneDayWeatherData.location.lat
+    this.longitude = this.oneDayWeatherData.location.lon
     const container = await this.generateContent()
-    this.mainContainer = create("div", s.wrapper, container);
+    const controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
+    const controlBlocklElem = controlBlock.generateLayout()
+    const header = create("header", null, create('div', s.container, controlBlocklElem)) 
+    this.mainContainer = create("div", s.wrapper, [header, container]);
     this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
-    setTimeout (this.changeLang.bind(this), 100)
+    setTimeout (this.changeLangAndCityListener.bind(this), 100)
+    setTimeout (await this.createMap.bind(this), 100)
     return this.mainContainer;
+  }
+  async createMap(){
+    const mapsAPI = new MapsAPI(this.longitude, this.latitude)
+    await mapsAPI.generateLayout()
   }
   async getCityData() {
     const cityAPI = new CityAPI();
+    
     const cityData = await cityAPI.getCityData();
     this.city = cityData.city
   }
+  async getWeatherData(city, coutDays, selectedLanguage) {
+    const weatherAPI = new WeatherAPI(city, coutDays, selectedLanguage);
+    return await weatherAPI.getWeatherData();
+  }
   async generateContent(){
-    const controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
-    const controlBlocklElem = controlBlock.generateLayout()
+    this.mapContainer = create('div', null, null, null, ['id', 'map'])
     if(this.weatherForTodayBlock ) {
       this.weatherForTodayBlock.stopTimer()
     }
     if(this.weatherForThreeDayBlock ) {
       this.weatherForThreeDayBlock.stopTimer()
     }
-    this.container = create("div", s.container, [controlBlocklElem])
+    this.weatherContainer = create('div', "container_weatherContent")
+    const mainContainer = create("div", "main container", this.weatherContainer)
     await this.createWeatherBlock()
-    return this.container
+    mainContainer.append(this.mapContainer)
+    return mainContainer
   }
   async createWeatherBlock(){
-    this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city)
-    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city)
+    this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.oneDayWeatherData)
+    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData)
     this.weatherForToday = await this.weatherForTodayBlock.generateLayout()
     this.weatherForThreeDay = await this.weatherForThreeDayBlock.generateLayout()
-    this.container.append(this.weatherForToday)
-    this.container.append(this.weatherForThreeDay)
+    this.weatherContainer.append(this.weatherForToday)
+    this.weatherContainer.append(this.weatherForThreeDay)
   }
   async getBackgroundUrl(){
-    let url = ''
     const pictureAPI = new PictureAPI();
-    this.pictureData =   await pictureAPI.getPicture();
-    url = this.pictureData.urls.regular
-    this.backgroundUrl = url
-    
+    this.pictureData =  await pictureAPI.getPicture();
+    this.backgroundUrl = this.pictureData.urls.regular
   }
- changeLang(){
+ changeLangAndCityListener(){
     document.querySelector('.wrapper').addEventListener('click',async (e)=>{
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_lang")){
         this.selectedLanguage = e.target.getAttribute("data-value")
-        //localStorage.setItem('weatherForecast_language', e.target.getAttribute("data-value"))
-        const content = await this.generateContent();
-        document.querySelector('.wrapper').innerHTML = null
-        document.querySelector('.wrapper').append(content)
+        this.weatherForToday.remove()
+        this.weatherForThreeDay.remove()
+        await this.createWeatherBlock()
       }
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_temp")){
         this.selectedTemp = e.target.getAttribute("data-value")
-        //localStorage.setItem('weatherForecast_temp', e.target.getAttribute("data-value"))
         if(document.querySelector(".item_temp_unactive")){
           document.querySelectorAll(".item_temp_unactive").forEach((item)=>{
             item.classList.remove("item_temp_unactive")
@@ -91,14 +105,12 @@ class MainBlock {
         await this.getBackgroundUrl()
         this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
       }
-
     })
     document.querySelector('.wrapper').addEventListener('keydown',async (e)=>{
       if(e.target.classList.contains("searchCityInput") && e.code === 'Enter'){
-        console.log("dddd")
         this.city = e.target.value
-this.weatherForToday.remove()
-this.weatherForThreeDay.remove()
+        this.weatherForToday.remove()
+        this.weatherForThreeDay.remove()
         this.createWeatherBlock()
       }
     })

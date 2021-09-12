@@ -1,20 +1,21 @@
 import create from "../../utils/create.utils.js";
 import s from "./WeatherForTodayBlock.module.scss";
-import WeatherAPI from "../WeatherAPI/WeatherAPI";
+
 
 class WeatherForTodayBlock {
-  constructor(selectedLanguage, selectedTemp,  wordsData, city){
+  constructor(selectedLanguage, selectedTemp,  wordsData, city, weatherData){
     this.selectedLanguage = selectedLanguage
     this.selectedTemp = selectedTemp
     this.wordsData = wordsData
     this.timer = null;
     this.city = city;
+    this.weatherData = weatherData;
   }
   async generateLayout() {
     const wordsData = this.wordsData
     const cityName = this.city;
     this.lang = this.selectedLanguage === '0' ? "ru" : "en"
-    await this.getWeatherData(cityName, 1, this.lang);
+
 
     const countryName = this.weatherData.location.country;
     
@@ -44,13 +45,6 @@ class WeatherForTodayBlock {
     clearInterval(this.timer)
   }
 
-
-
-  async getWeatherData(city, coutDays, selectedLanguage) {
-    const weatherAPI = new WeatherAPI(city, coutDays, selectedLanguage);
-    this.weatherData = await weatherAPI.getWeatherData();
-  }
-
   currentWeather (data) {
     let result = ''
     const wordsData = this.wordsData
@@ -59,14 +53,11 @@ class WeatherForTodayBlock {
     const summary = data.condition.text;
     const apparentTemperatureC = data.feelslike_c;
     const apparentTemperatureF = data.feelslike_f;
-        const humidity = data.humidity;
+    const humidity = data.humidity;
     const wind_kpm = Math.round(data.wind_kph * 10 / 60);
     const weatherIconHref = data.condition.icon
     const currentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.currentTemperatureC + currentTemperatureС )
-
     const currentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.currentTemperatureF + currentTemperatureF )
-
-
     const apparentTemperatureCItem = create('li', "currentWeather_item item_tempC", wordsData.apparentTemperatureC + apparentTemperatureC )
     const apparentTemperatureFItem = create('li', "currentWeather_item item_tempF", wordsData.apparentTemperatureF + apparentTemperatureF )
     if(this.selectedTemp === "0") {
