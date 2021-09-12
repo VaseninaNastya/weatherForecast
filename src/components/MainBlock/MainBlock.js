@@ -33,7 +33,7 @@ class MainBlock {
     const header = create("header", null, create('div', s.container, controlBlocklElem)) 
     this.mainContainer = create("div", s.wrapper, [header, container]);
     this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
-    setTimeout (this.changeLang.bind(this), 100)
+    setTimeout (this.changeLangAndCityListener.bind(this), 100)
     setTimeout (await this.createMap.bind(this), 100)
     return this.mainContainer;
   }
@@ -78,7 +78,7 @@ class MainBlock {
     this.pictureData =  await pictureAPI.getPicture();
     this.backgroundUrl = this.pictureData.urls.regular
   }
- changeLang(){
+ changeLangAndCityListener(){
     document.querySelector('.wrapper').addEventListener('click',async (e)=>{
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_lang")){
         this.selectedLanguage = e.target.getAttribute("data-value")
@@ -105,7 +105,6 @@ class MainBlock {
         await this.getBackgroundUrl()
         this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
       }
-
     })
     document.querySelector('.wrapper').addEventListener('keydown',async (e)=>{
       if(e.target.classList.contains("searchCityInput") && e.code === 'Enter'){
