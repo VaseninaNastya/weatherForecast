@@ -3,7 +3,7 @@ constructor(longitude, latitude){
   this.longitude = longitude,
   this.latitude = latitude
 }
- async generateLayout() {
+ async getData() {
     mapboxgl.accessToken = 'pk.eyJ1IjoibmFzdHlhdmFzZW5pbmEiLCJhIjoiY2t0YWFvcmI1MWthczJ4bGFpdzN0emNkZiJ9.ArsmDaUaBW8s3UZh-Z91kw';
 
   const map = await new mapboxgl.Map({

@@ -8,6 +8,7 @@ import wordsEn from "../../utils/wordsEn.utils";
 import wordsRu from "../../utils/wordsRu.utils";
 import CityAPI from "../CityAPI/CityAPI";
 import MapsAPI from "../MapsAPI/MapsAPI";
+import GeoCoordAPI from "../GeoCoordAPI/GeoCoordAPI";
 import WeatherAPI from "../WeatherAPI/WeatherAPI";
 
 class MainBlock {
@@ -21,12 +22,11 @@ class MainBlock {
     this.latitude = ''
   }
   async generateLayout() {
-    await this.getBackgroundUrl()
+    await this.getPictureData()
     await this.getCityData()
+    await this.getGeoCoordData()
     this.oneDayWeatherData = await this.getWeatherData(this.city , 1, this.selectedLanguage)
     this.threeDaysWeatherData = await this.getWeatherData(this.city , 3, this.selectedLanguage)
-    this.latitude = this.oneDayWeatherData.location.lat
-    this.longitude = this.oneDayWeatherData.location.lon
     const container = await this.generateContent()
     const controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
     const controlBlocklElem = controlBlock.generateLayout()
@@ -34,22 +34,32 @@ class MainBlock {
     this.mainContainer = create("div", s.wrapper, [header, container]);
     this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
     setTimeout (this.changeLangAndCityListener.bind(this), 100)
-    setTimeout (await this.createMap.bind(this), 100)
+    setTimeout (await this.getMapData.bind(this), 100)
     return this.mainContainer;
   }
-  async createMap(){
+  async getMapData(){
     const mapsAPI = new MapsAPI(this.longitude, this.latitude)
-    await mapsAPI.generateLayout()
+    await mapsAPI.getData()
   }
   async getCityData() {
     const cityAPI = new CityAPI();
-    
-    const cityData = await cityAPI.getCityData();
+    const cityData = await cityAPI.getData();
     this.city = cityData.city
   }
   async getWeatherData(city, coutDays, selectedLanguage) {
     const weatherAPI = new WeatherAPI(city, coutDays, selectedLanguage);
-    return await weatherAPI.getWeatherData();
+    return await weatherAPI.getData();
+  }
+  async getGeoCoordData(){
+    const geoCoordAPI = new GeoCoordAPI(this.city)
+    const GeoCoordData = await geoCoordAPI.getData()
+    this.longitude = GeoCoordData.results[0].geometry.lng
+    this.latitude = GeoCoordData.results[0].geometry.lat
+  }
+  async getPictureData(){
+    const pictureAPI = new PictureAPI();
+    this.pictureData =  await pictureAPI.getData();
+    this.backgroundUrl = this.pictureData.urls.regular
   }
   async generateContent(){
     this.mapContainer = create('div', null, null, null, ['id', 'map'])
@@ -72,11 +82,6 @@ class MainBlock {
     this.weatherForThreeDay = await this.weatherForThreeDayBlock.generateLayout()
     this.weatherContainer.append(this.weatherForToday)
     this.weatherContainer.append(this.weatherForThreeDay)
-  }
-  async getBackgroundUrl(){
-    const pictureAPI = new PictureAPI();
-    this.pictureData =  await pictureAPI.getPicture();
-    this.backgroundUrl = this.pictureData.urls.regular
   }
  changeLangAndCityListener(){
     document.querySelector('.wrapper').addEventListener('click',async (e)=>{
@@ -102,15 +107,18 @@ class MainBlock {
       }
       if(e.target.classList.contains("changeBackgroundButton")){
         e.preventDefault()
-        await this.getBackgroundUrl()
+        await this.getPictureData()
         this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
       }
     })
     document.querySelector('.wrapper').addEventListener('keydown',async (e)=>{
       if(e.target.classList.contains("searchCityInput") && e.code === 'Enter'){
         this.city = e.target.value
+        await this.getGeoCoordData()
         this.weatherForToday.remove()
         this.weatherForThreeDay.remove()
+        this.mapContainer.innerHTML = null
+        setTimeout (await this.getMapData.bind(this), 100)
         this.createWeatherBlock()
       }
     })
