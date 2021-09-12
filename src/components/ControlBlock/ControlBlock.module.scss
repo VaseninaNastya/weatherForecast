@@ -1,7 +1,41 @@
 .changeBackgroundButton{
-    padding: 5px
+    padding: 5px;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    font-size: 15px;
+}
+.changeBackgroundButton:hover,
+.changeBackgroundButton:active{
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 .searchCityInput{
     height: 30px;
     width: 200px;
+    padding: 5px;
+    margin-left: 5px;
+}
+.toggle_container_lang{
+    margin-right: 20px;
+}
+.buttons_container{
+    display: flex;
+    min-width: 300px;
+}
+.searchCityInput_container{
+    min-width: 310px;
+    display: flex;
+    justify-content: flex-end;
+
+}
+
+
+@media (max-width: 1200px) {
+.buttons_container, .searchCityInput_container{
+    min-width: fit-content;
+}
+.buttons_container{
+    margin-bottom: 10px;
+}
 }

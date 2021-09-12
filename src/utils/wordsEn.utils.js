@@ -21,4 +21,5 @@ module.exports = {
   weekDay: "Day of week: ",
   degree: "°",
   changeBack: 'change background',
+  findAСity: 'find a city: ',
 };

@@ -28,9 +28,11 @@ class MainBlock {
     this.oneDayWeatherData = await this.getWeatherData(this.city , 1, this.selectedLanguage)
     this.threeDaysWeatherData = await this.getWeatherData(this.city , 3, this.selectedLanguage)
     const container = await this.generateContent()
-    const controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
-    const controlBlocklElem = controlBlock.generateLayout()
-    const header = create("header", null, create('div', s.container, controlBlocklElem)) 
+    this.controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
+    this.controlBlocklElem = this.controlBlock.generateLayout()
+    this.headerContainer = create('div', s.container, this.controlBlocklElem)
+    const header = create("header", null, this.headerContainer) 
+
     this.mainContainer = create("div", s.wrapper, [header, container]);
     this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
     setTimeout (this.changeLangAndCityListener.bind(this), 100)
@@ -77,7 +79,7 @@ class MainBlock {
   }
   async createWeatherBlock(){
     this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.oneDayWeatherData)
-    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData)
+    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData, this.latitude, this.longitude)
     this.weatherForToday = await this.weatherForTodayBlock.generateLayout()
     this.weatherForThreeDay = await this.weatherForThreeDayBlock.generateLayout()
     this.weatherContainer.append(this.weatherForToday)
@@ -87,8 +89,13 @@ class MainBlock {
     document.querySelector('.wrapper').addEventListener('click',async (e)=>{
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_lang")){
         this.selectedLanguage = e.target.getAttribute("data-value")
+        this.headerContainer.innerHTML = null
         this.weatherForToday.remove()
         this.weatherForThreeDay.remove()
+        
+        this.controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
+        this.controlBlocklElem = this.controlBlock.generateLayout()
+        this.controlBlocklElem.map(item => this.headerContainer.append(item))
         await this.createWeatherBlock()
       }
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_temp")){
@@ -106,7 +113,6 @@ class MainBlock {
         }
       }
       if(e.target.classList.contains("changeBackgroundButton")){
-        e.preventDefault()
         await this.getPictureData()
         this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
       }
