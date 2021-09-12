@@ -8,7 +8,7 @@ import wordsEn from "../../utils/wordsEn.utils";
 import wordsRu from "../../utils/wordsRu.utils";
 import CityAPI from "../CityAPI/CityAPI";
 import MapsAPI from "../MapsAPI/MapsAPI";
-
+import WeatherAPI from "../WeatherAPI/WeatherAPI";
 
 class MainBlock {
   constructor(){
@@ -16,23 +16,30 @@ class MainBlock {
     this.selectedLanguage = localStorage.getItem('weatherForecast_language') || 0;
     this.selectedTemp =  localStorage.getItem('weatherForecast_temp') || 0 ;
     this.backgroundUrl = '';
-    this.city = ''
-
+    this.city = '';
+    this.longitude = ''
+    this.latitude = ''
   }
   async generateLayout() {
     await this.getBackgroundUrl()
     await this.getCityData()
-    const mapContainer = create('div', null, null, null, ['id', 'map'])
+    this.oneDayWeatherData = await this.getWeatherData(this.city , 1, this.selectedLanguage)
+    this.threeDaysWeatherData = await this.getWeatherData(this.city , 3, this.selectedLanguage)
+    this.latitude = this.oneDayWeatherData.location.lat
+    this.longitude = this.oneDayWeatherData.location.lon
     const container = await this.generateContent()
-    this.mainContainer = create("div", s.wrapper, [container,  mapContainer ]);
+    const controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
+    const controlBlocklElem = controlBlock.generateLayout()
+    const header = create("header", null, create('div', s.container, controlBlocklElem)) 
+    this.mainContainer = create("div", s.wrapper, [header, container]);
     this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
     setTimeout (this.changeLang.bind(this), 100)
     setTimeout (await this.createMap.bind(this), 100)
     return this.mainContainer;
   }
   async createMap(){
-    const mapsAPI = new MapsAPI()
-    const map = await mapsAPI.generateLayout()
+    const mapsAPI = new MapsAPI(this.longitude, this.latitude)
+    await mapsAPI.generateLayout()
   }
   async getCityData() {
     const cityAPI = new CityAPI();
@@ -40,26 +47,30 @@ class MainBlock {
     const cityData = await cityAPI.getCityData();
     this.city = cityData.city
   }
+  async getWeatherData(city, coutDays, selectedLanguage) {
+    const weatherAPI = new WeatherAPI(city, coutDays, selectedLanguage);
+    return await weatherAPI.getWeatherData();
+  }
   async generateContent(){
-    const controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
-    const controlBlocklElem = controlBlock.generateLayout()
+    const mapContainer = create('div', null, null, null, ['id', 'map'])
     if(this.weatherForTodayBlock ) {
       this.weatherForTodayBlock.stopTimer()
     }
     if(this.weatherForThreeDayBlock ) {
       this.weatherForThreeDayBlock.stopTimer()
     }
-    this.container = create("div", s.container, [controlBlocklElem])
+    this.container = create("div", "main container")
     await this.createWeatherBlock()
+    this.container.append(mapContainer)
     return this.container
   }
   async createWeatherBlock(){
-    this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city)
-    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city)
+    this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.oneDayWeatherData)
+    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData)
     this.weatherForToday = await this.weatherForTodayBlock.generateLayout()
     this.weatherForThreeDay = await this.weatherForThreeDayBlock.generateLayout()
-    this.container.append(this.weatherForToday)
-    this.container.append(this.weatherForThreeDay)
+    const weatherContainer = create('div', "container_weatherContent", [this.weatherForToday, this.weatherForThreeDay])
+    this.container.append(weatherContainer)
   }
   async getBackgroundUrl(){
     let url = ''
@@ -102,10 +113,9 @@ class MainBlock {
     })
     document.querySelector('.wrapper').addEventListener('keydown',async (e)=>{
       if(e.target.classList.contains("searchCityInput") && e.code === 'Enter'){
-        console.log("dddd")
         this.city = e.target.value
-this.weatherForToday.remove()
-this.weatherForThreeDay.remove()
+        this.weatherForToday.remove()
+        this.weatherForThreeDay.remove()
         this.createWeatherBlock()
       }
     })

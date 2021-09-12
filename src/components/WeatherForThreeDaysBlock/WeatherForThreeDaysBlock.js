@@ -1,19 +1,19 @@
 import create from "../../utils/create.utils.js";
 import s from "./WeatherForThreeDaysBlock.module.scss";
-import WeatherAPI from "../WeatherAPI/WeatherAPI";
+
 
 class WeatherForThreeDaysBlock {
-  constructor(selectedLanguage, selectedTemp,  wordsData, city){
+  constructor(selectedLanguage, selectedTemp,  wordsData, city, weatherData){
     this.selectedLanguage = selectedLanguage
     this.selectedTemp = selectedTemp
     this.wordsData = wordsData
     this.timer = null;
     this.city =  city;
+    this.weatherData = weatherData;
   }
   async generateLayout() {
     const wordsData = this.wordsData
     this.lang = this.selectedLanguage === '0' ? "ru" : "en"
-    await this.getWeatherData( this.city, 3, this.lang);
     const currentDate = this.showTime()
     const latitude = this.weatherData.location.lat
     const longitude = this.weatherData.location.lon
@@ -41,12 +41,6 @@ class WeatherForThreeDaysBlock {
   stopTimer(){
     clearInterval(this.timer)
   }
-  async getWeatherData(city, coutDays, selectedLanguage) {
-    const weatherAPI = new WeatherAPI(city, coutDays, selectedLanguage);
-    this.weatherData = await weatherAPI.getWeatherData();
-    console.log("this.weatherData", this.weatherData);
-  }
-
   currentWeather (data) {
     let result = ''
     const wordsData = this.wordsData
@@ -70,7 +64,7 @@ class WeatherForThreeDaysBlock {
     }
     return result
   }
-  showTime(){
+  showTime () {
     let result = ''
     const locale = this.selectedLanguage === '0' ? "ru" : "en"
     const date = new Date() 
@@ -81,8 +75,5 @@ class WeatherForThreeDaysBlock {
   changeTime(){
     if(document.querySelector(".currentWeekDate")) document.querySelector(".currentWeekDate").innerText = this.showTime()
   }
-  
-
-
 }
 export default WeatherForThreeDaysBlock;
