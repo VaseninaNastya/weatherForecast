@@ -52,25 +52,26 @@ class MainBlock {
     return await weatherAPI.getWeatherData();
   }
   async generateContent(){
-    const mapContainer = create('div', null, null, null, ['id', 'map'])
+    this.mapContainer = create('div', null, null, null, ['id', 'map'])
     if(this.weatherForTodayBlock ) {
       this.weatherForTodayBlock.stopTimer()
     }
     if(this.weatherForThreeDayBlock ) {
       this.weatherForThreeDayBlock.stopTimer()
     }
-    this.container = create("div", "main container")
+    this.weatherContainer = create('div', "container_weatherContent")
+    const mainContainer = create("div", "main container", this.weatherContainer)
     await this.createWeatherBlock()
-    this.container.append(mapContainer)
-    return this.container
+    mainContainer.append(this.mapContainer)
+    return mainContainer
   }
   async createWeatherBlock(){
     this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.oneDayWeatherData)
     this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData)
     this.weatherForToday = await this.weatherForTodayBlock.generateLayout()
     this.weatherForThreeDay = await this.weatherForThreeDayBlock.generateLayout()
-    const weatherContainer = create('div', "container_weatherContent", [this.weatherForToday, this.weatherForThreeDay])
-    this.container.append(weatherContainer)
+    this.weatherContainer.append(this.weatherForToday)
+    this.weatherContainer.append(this.weatherForThreeDay)
   }
   async getBackgroundUrl(){
     let url = ''
@@ -84,10 +85,11 @@ class MainBlock {
     document.querySelector('.wrapper').addEventListener('click',async (e)=>{
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_lang")){
         this.selectedLanguage = e.target.getAttribute("data-value")
-        //localStorage.setItem('weatherForecast_language', e.target.getAttribute("data-value"))
-        const content = await this.generateContent();
-        document.querySelector('.wrapper').innerHTML = null
-        document.querySelector('.wrapper').append(content)
+        /*localStorage.setItem('weatherForecast_language', e.target.getAttribute("data-value"))
+        const content = await this.generateContent();*/
+        this.weatherForToday.remove()
+        this.weatherForThreeDay.remove()
+        await this.createWeatherBlock()
       }
       if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_temp")){
         this.selectedTemp = e.target.getAttribute("data-value")
