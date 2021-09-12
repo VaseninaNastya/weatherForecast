@@ -77,7 +77,7 @@ class MainBlock {
   }
   async createWeatherBlock(){
     this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.oneDayWeatherData)
-    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData)
+    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData, this.latitude, this.longitude)
     this.weatherForToday = await this.weatherForTodayBlock.generateLayout()
     this.weatherForThreeDay = await this.weatherForThreeDayBlock.generateLayout()
     this.weatherContainer.append(this.weatherForToday)
@@ -106,7 +106,6 @@ class MainBlock {
         }
       }
       if(e.target.classList.contains("changeBackgroundButton")){
-        e.preventDefault()
         await this.getPictureData()
         this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
       }
