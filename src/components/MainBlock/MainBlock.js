@@ -81,9 +81,6 @@ class MainBlock {
     if(this.weatherForTodayBlock ) {
       this.weatherForTodayBlock.stopTimer()
     }
-    if(this.weatherForThreeDayBlock ) {
-      this.weatherForThreeDayBlock.stopTimer()
-    }
     this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.oneDayWeatherData, this.timeZone)
     this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData, this.timeZone)
     this.weatherForToday = await this.weatherForTodayBlock.generateLayout()
@@ -91,8 +88,6 @@ class MainBlock {
     this.weatherContainer.append(this.weatherForToday)
     this.weatherContainer.append(this.weatherForThreeDay)
     this.weatherForTodayBlock.startTimer()
-    this.weatherForThreeDayBlock.startTimer()
-    console.log("[this.wordsData[this.selectedLanguage]", this.wordsData[this.selectedLanguage])
     this.geoElem = create('div', s.geo_container, [
      create('span', null, [this.wordsData[this.selectedLanguage].latitude, +this.latitude.toFixed(2), this.wordsData[this.selectedLanguage].degree]),
      create('span', null, [this.wordsData[this.selectedLanguage].longitude, +this.longitude.toFixed(2), this.wordsData[this.selectedLanguage].degree]),
