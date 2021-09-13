@@ -72,6 +72,7 @@ class MainBlock {
     this.mapContainer = create('div', null, null, null, ['id', 'map'])
     this.weatherContainer = create('div', "container_weatherContent")
     const mainContainer = create("div", "main container", this.weatherContainer)
+
     await this.createWeatherBlock()
     mainContainer.append(this.mapContainer)
     return mainContainer
@@ -84,13 +85,19 @@ class MainBlock {
       this.weatherForThreeDayBlock.stopTimer()
     }
     this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.oneDayWeatherData, this.timeZone)
-    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData, this.latitude, this.longitude, this.timeZone)
+    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData, this.timeZone)
     this.weatherForToday = await this.weatherForTodayBlock.generateLayout()
     this.weatherForThreeDay = await this.weatherForThreeDayBlock.generateLayout()
     this.weatherContainer.append(this.weatherForToday)
     this.weatherContainer.append(this.weatherForThreeDay)
     this.weatherForTodayBlock.startTimer()
     this.weatherForThreeDayBlock.startTimer()
+    console.log("[this.wordsData[this.selectedLanguage]", this.wordsData[this.selectedLanguage])
+    this.geoElem = create('div', s.geo_container, [
+     create('span', null, [this.wordsData[this.selectedLanguage].latitude, +this.latitude.toFixed(2), this.wordsData[this.selectedLanguage].degree]),
+     create('span', null, [this.wordsData[this.selectedLanguage].longitude, +this.longitude.toFixed(2), this.wordsData[this.selectedLanguage].degree]),
+    ])
+    this.weatherContainer.append(this.geoElem)
   }
  changeLangAndCityListener(){
     document.querySelector('.wrapper').addEventListener('click',async (e)=>{
@@ -99,7 +106,7 @@ class MainBlock {
         this.headerContainer.innerHTML = null
         this.weatherForToday.remove()
         this.weatherForThreeDay.remove()
-        
+        this.geoElem.remove()
         this.controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
         this.controlBlocklElem = this.controlBlock.generateLayout()
         this.controlBlocklElem.map(item => this.headerContainer.append(item))
@@ -130,6 +137,7 @@ class MainBlock {
         await this.getGeoCoordData()
         this.weatherForToday.remove()
         this.weatherForThreeDay.remove()
+        this.geoElem.remove()
         this.mapContainer.innerHTML = null
         setTimeout (await this.getMapData.bind(this), 100)
         await this.getWeatherDataForOneAndThreeDays()
