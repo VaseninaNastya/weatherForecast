@@ -25,8 +25,7 @@ class MainBlock {
     await this.getPictureData()
     await this.getCityData()
     await this.getGeoCoordData()
-    this.oneDayWeatherData = await this.getWeatherData(this.city , 1, this.selectedLanguage)
-    this.threeDaysWeatherData = await this.getWeatherData(this.city , 3, this.selectedLanguage)
+    await this.getWeatherDataForOneAndThreeDays()
     const container = await this.generateContent()
     this.controlBlock = new ControlBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage]);
     this.controlBlocklElem = this.controlBlock.generateLayout()
@@ -38,6 +37,10 @@ class MainBlock {
     setTimeout (this.changeLangAndCityListener.bind(this), 100)
     setTimeout (await this.getMapData.bind(this), 100)
     return this.mainContainer;
+  }
+  async getWeatherDataForOneAndThreeDays(){
+    this.oneDayWeatherData = await this.getWeatherData(this.city , 1, this.selectedLanguage)
+    this.threeDaysWeatherData = await this.getWeatherData(this.city , 3, this.selectedLanguage)
   }
   async getMapData(){
     const mapsAPI = new MapsAPI(this.longitude, this.latitude)
@@ -125,6 +128,7 @@ class MainBlock {
         this.weatherForThreeDay.remove()
         this.mapContainer.innerHTML = null
         setTimeout (await this.getMapData.bind(this), 100)
+        await this.getWeatherDataForOneAndThreeDays()
         this.createWeatherBlock()
       }
     })
