@@ -3,13 +3,14 @@ import s from "./WeatherForTodayBlock.module.scss";
 
 
 class WeatherForTodayBlock {
-  constructor(selectedLanguage, selectedTemp,  wordsData, city, weatherData){
+  constructor(selectedLanguage, selectedTemp,  wordsData, city, weatherData, timeZone){
     this.selectedLanguage = selectedLanguage
     this.selectedTemp = selectedTemp
     this.wordsData = wordsData
     this.timer = null;
     this.city = city;
     this.weatherData = weatherData;
+    this.timeZone = timeZone
   }
   async generateLayout() {
     this.lang = this.selectedLanguage === '0' ? "ru" : "en"
@@ -83,7 +84,7 @@ class WeatherForTodayBlock {
     let result = ''
     const locale = this.selectedLanguage === '0' ? "ru" : "en",
     date = new Date(),
-    currentDate = date.toLocaleString(locale , {day: "numeric",month:"long",  weekday: "short", hour: 'numeric', minute: 'numeric', second: 'numeric'})
+    currentDate = date.toLocaleString(locale , {day: "numeric",month:"long",  weekday: "short", hour: 'numeric', minute: 'numeric', second: 'numeric', timeZone: this.timeZone})
     if(currentDate) result = currentDate
     return result
   };

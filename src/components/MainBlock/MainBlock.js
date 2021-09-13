@@ -41,8 +41,9 @@ class MainBlock {
   async getWeatherDataForOneAndThreeDays(){
     this.oneDayWeatherData = await this.getWeatherData(this.city , 1, this.selectedLanguage)
     this.threeDaysWeatherData = await this.getWeatherData(this.city , 3, this.selectedLanguage)
+    this.timeZone = this.oneDayWeatherData.location.tz_id
   }
-  async getMapData(){
+  async getMapData() {
     const mapsAPI = new MapsAPI(this.longitude, this.latitude)
     await mapsAPI.getData()
   }
@@ -58,6 +59,7 @@ class MainBlock {
   async getGeoCoordData(){
     const geoCoordAPI = new GeoCoordAPI(this.city)
     const GeoCoordData = await geoCoordAPI.getData()
+
     this.longitude = GeoCoordData.results[0].geometry.lng
     this.latitude = GeoCoordData.results[0].geometry.lat
   }
@@ -68,12 +70,6 @@ class MainBlock {
   }
   async generateContent(){
     this.mapContainer = create('div', null, null, null, ['id', 'map'])
-    if(this.weatherForTodayBlock ) {
-      this.weatherForTodayBlock.stopTimer()
-    }
-    if(this.weatherForThreeDayBlock ) {
-      this.weatherForThreeDayBlock.stopTimer()
-    }
     this.weatherContainer = create('div', "container_weatherContent")
     const mainContainer = create("div", "main container", this.weatherContainer)
     await this.createWeatherBlock()
@@ -81,12 +77,20 @@ class MainBlock {
     return mainContainer
   }
   async createWeatherBlock(){
-    this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.oneDayWeatherData)
-    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData, this.latitude, this.longitude)
+    if(this.weatherForTodayBlock ) {
+      this.weatherForTodayBlock.stopTimer()
+    }
+    if(this.weatherForThreeDayBlock ) {
+      this.weatherForThreeDayBlock.stopTimer()
+    }
+    this.weatherForTodayBlock = new WeatherForTodayBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.oneDayWeatherData, this.timeZone)
+    this.weatherForThreeDayBlock = new WeatherForThreeDaysBlock(this.selectedLanguage, this.selectedTemp, this.wordsData[this.selectedLanguage], this.city, this.threeDaysWeatherData, this.latitude, this.longitude, this.timeZone)
     this.weatherForToday = await this.weatherForTodayBlock.generateLayout()
     this.weatherForThreeDay = await this.weatherForThreeDayBlock.generateLayout()
     this.weatherContainer.append(this.weatherForToday)
     this.weatherContainer.append(this.weatherForThreeDay)
+    this.weatherForTodayBlock.startTimer()
+    this.weatherForThreeDayBlock.startTimer()
   }
  changeLangAndCityListener(){
     document.querySelector('.wrapper').addEventListener('click',async (e)=>{
