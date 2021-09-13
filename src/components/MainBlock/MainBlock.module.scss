@@ -119,6 +119,11 @@ header{
   flex-direction: column;
   width: 50%;
 }
+.geo_container{
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
 @media (max-width: 1200px) {
   .container{
     max-width: 100%;

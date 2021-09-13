@@ -3,16 +3,14 @@ import s from "./WeatherForThreeDaysBlock.module.scss";
 
 
 class WeatherForThreeDaysBlock {
-  constructor(selectedLanguage, selectedTemp,  wordsData, city, weatherData,latitude, longitude, timeZone){
+  constructor(selectedLanguage, selectedTemp,  wordsData, city, weatherData, timeZone){
     this.selectedLanguage = selectedLanguage
     this.selectedTemp = selectedTemp
     this.wordsData = wordsData
     this.timer = null;
     this.city =  city;
     this.weatherData = weatherData;
-    this.latitude = latitude;
-    this.longitude = longitude;
-    this.timeZone = timeZone;
+this. timeZone =  timeZone
   }
   async generateLayout() {
     this.lang = this.selectedLanguage === '0' ? "ru" : "en"
@@ -23,11 +21,9 @@ class WeatherForThreeDaysBlock {
       "div",
       "weather_container",
       [create('h3', null, wordsData.WeatherForThreeDays),
-      create("ul", s.weather_list, [
+      create("ul", s.weather_list, 
         create("li", s.weather_item, [wordsData.todaysDate, create("span", s.weekDay, currentDate)]),
-        create("li", s.weather_item, [wordsData.latitude, +this.latitude.toFixed(2), wordsData.degree]),
-        create("li", s.weather_item, [wordsData.longitude, +this.longitude.toFixed(2), wordsData.degree]),
-      ])]
+      )]
     );
     if(weatherElems.length){
       weatherElems.map((item)=>{
