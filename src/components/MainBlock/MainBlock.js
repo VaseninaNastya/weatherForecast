@@ -69,7 +69,13 @@ class MainBlock {
     this.backgroundUrl = this.pictureData.urls.regular
   }
   async generateContent(){
-    this.mapContainer = create('div', null, null, null, ['id', 'map'])
+
+
+
+
+    this.mapContainer = create('div', null, create("span", null,[this.wordsData.latitude, +this.latitude.toFixed(2), this.wordsData.degree,
+      this.wordsData.longitude, +this.longitude.toFixed(2), this.wordsData.degree
+    ] ), null, ['id', 'map'])
     this.weatherContainer = create('div', "container_weatherContent")
     const mainContainer = create("div", "main container", this.weatherContainer)
     await this.createWeatherBlock()
