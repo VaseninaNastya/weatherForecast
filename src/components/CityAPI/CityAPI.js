@@ -1,11 +1,13 @@
+import apiUrls from "../../utils/apiUrls.utils";
+import apiTokens from "../../utils/apiTokens.utils";
 class CityAPI {
   constructor() {
-    this.API_SERVER = 'https://ipinfo.io/json';
+    this.API_SERVER = apiUrls.cityApiUrl;
 
   }
   /*  Users   */
   async getData() {
-    return fetch(this.API_SERVER + '?token=f448fbc106419d' , {
+    return fetch(this.API_SERVER + apiTokens.cityApiToken , {
       method: "GET",
     })
       .then((response) => {

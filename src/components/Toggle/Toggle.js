@@ -27,11 +27,11 @@ class Toggle {
   }
   togglerContainerEventListener() {
   
-    this.toggleContainer.addEventListener('click',(e) => {
-      if(e.currentTarget.querySelector('.toggle_item')){
-        e.currentTarget.querySelector('.toggle_item_selected').classList.remove("toggle_item_selected")
-        e.target.classList.add("toggle_item_selected")
-        localStorage.setItem(this.localStorageKey, e.target.getAttribute("data-value"))
+    this.toggleContainer.addEventListener('click',({currentTarget, target }) => {
+      if(currentTarget.querySelector('.toggle_item')){
+        currentTarget.querySelector('.toggle_item_selected').classList.remove("toggle_item_selected")
+        target.classList.add("toggle_item_selected")
+        localStorage.setItem(this.localStorageKey, target.getAttribute("data-value"))
       }
     });
   }
