@@ -1,11 +1,14 @@
+import apiUrls from "../../utils/apiUrls.utils";
+import apiTokens from "../../utils/apiTokens.utils";
+
 class PictureAPI {
   constructor() {
-    this.API_SERVER = 'https://api.unsplash.com/photos/random';
+    this.API_SERVER = apiUrls.pictureApiUrl;
 
   }
   /*  Users   */
   async getData() {
-    return fetch(this.API_SERVER + '?orientation=landscape&per_page=1&query=nature&utm_source=WeatherForecast&utm_medium=referral&client_id=JToQOKVPeE9Nan0sjmS0L7_K8mdz5P20FqHzCFuu0oI' , {
+    return fetch(this.API_SERVER + apiTokens.pictureApiToken , {
       method: "GET",
     })
       .then((response) => {

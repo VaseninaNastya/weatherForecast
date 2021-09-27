@@ -1,7 +1,7 @@
 import create from "../../utils/create.utils.js";
 import s from "./WeatherForTodayBlock.module.scss";
 
-
+import numbers from "../../utils/numbers.utils";
 class WeatherForTodayBlock {
   constructor(selectedLanguage, selectedTemp,  wordsData, city, weatherData, timeZone){
     this.selectedLanguage = selectedLanguage
@@ -53,7 +53,7 @@ class WeatherForTodayBlock {
     apparentTemperatureC = data.feelslike_c,
     apparentTemperatureF = data.feelslike_f,
     humidity = data.humidity,
-    wind_kpm = Math.round(data.wind_kph * 10 / 60),
+    wind_kpm = Math.round(data.wind_kph * numbers.windСoef),
     weatherIconHref = data.condition.icon,
     currentTemperatureCItem = create('li', "weather_item item_tempC", wordsData.currentTemperatureC + currentTemperatureС ),
     currentTemperatureFItem = create('li', "weather_item item_tempF", wordsData.currentTemperatureF + currentTemperatureF ),

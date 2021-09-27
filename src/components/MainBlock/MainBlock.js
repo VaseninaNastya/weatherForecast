@@ -95,9 +95,9 @@ class MainBlock {
     this.weatherContainer.append(this.geoElem)
   }
  changeLangAndCityListener(){
-    document.querySelector('.wrapper').addEventListener('click',async (e)=>{
-      if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_lang")){
-        this.selectedLanguage = e.target.getAttribute("data-value")
+    document.querySelector('.wrapper').addEventListener('click',async ({target})=>{
+      if(target.classList.contains("toggle_item") && target.parentNode.classList.contains("toggle_container_lang")){
+        this.selectedLanguage = target.getAttribute("data-value")
         this.headerContainer.innerHTML = null
         this.weatherForToday.remove()
         this.weatherForThreeDay.remove()
@@ -107,8 +107,8 @@ class MainBlock {
         this.controlBlocklElem.map(item => this.headerContainer.append(item))
         await this.createWeatherBlock()
       }
-      if(e.target.classList.contains("toggle_item") && e.target.parentNode.classList.contains("toggle_container_temp")){
-        this.selectedTemp = e.target.getAttribute("data-value")
+      if(target.classList.contains("toggle_item") && target.parentNode.classList.contains("toggle_container_temp")){
+        this.selectedTemp = target.getAttribute("data-value")
         if(document.querySelector(".item_temp_unactive")){
           document.querySelectorAll(".item_temp_unactive").forEach((item)=>{
             item.classList.remove("item_temp_unactive")
@@ -121,14 +121,14 @@ class MainBlock {
           document.querySelectorAll(".item_tempF").forEach((item)=>{item.classList.add("item_temp_unactive")})
         }
       }
-      if(e.target.classList.contains("changeBackgroundButton")){
+      if(target.classList.contains("changeBackgroundButton")){
         await this.getPictureData()
         this.mainContainer.setAttribute('style' , "background-image: url(" + `${this.backgroundUrl}` + ")")
       }
     })
-    document.querySelector('.wrapper').addEventListener('keydown',async (e)=>{
-      if(e.target.classList.contains("searchCityInput") && e.code === 'Enter'){
-        this.city = e.target.value
+    document.querySelector('.wrapper').addEventListener('keydown',async ({target})=>{
+      if(target.classList.contains("searchCityInput") && e.code === 'Enter'){
+        this.city = target.value
         await this.getGeoCoordData()
         this.weatherForToday.remove()
         this.weatherForThreeDay.remove()
